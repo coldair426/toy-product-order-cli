@@ -1,0 +1,132 @@
+root = true
+
+[*.{kt,kts}]
+################################################################
+# 기본 Kotlin 포맷팅 설정
+################################################################
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+max_line_length = 120
+
+
+################################################################
+# IntelliJ Import 규칙
+################################################################
+# import 정렬 순서: java → javax → kotlin → com → org → 기타(*)
+ij_kotlin_imports_layout = java., javax., kotlin., ^com, ^org, *
+
+# Nested class import 금지
+ij_kotlin_import_nested_classes = false
+
+# Star(*) import 금지
+ij_kotlin_name_count_to_use_star_import = 99
+ij_kotlin_name_count_to_use_star_import_for_members = 99
+
+
+################################################################
+# KTLINT Formatting 규칙
+################################################################
+
+############################
+# Trailing Comma
+############################
+# 선언부(data class, fun, constructor 등)
+ktlint_standard_trailing-comma-on-declaration-site = enabled
+# 호출부(function call, mapOf(), ApiResponse() 등)
+ktlint_standard_trailing-comma-on-call-site = enabled
+
+
+############################
+# Method Chain Wrapping
+############################
+# 메서드 체이닝 자동 줄바꿈 (세로 정렬)
+ktlint_standard_wrapping-chain = enabled
+
+
+############################
+# Function / Parameter Wrapping
+############################
+# fun 시그니처 줄바꿈
+ktlint_function-signature-wrapping = enabled
+
+# 함수 선언 파라미터 줄바꿈
+ktlint_standard_parameter-list-wrapping = enabled
+
+# 함수 호출부 argument 줄바꿈
+ktlint_argument-list-wrapping = enabled
+
+
+############################
+# Control Flow Formatting
+############################
+# if / else 자동 블록 정렬
+ktlint_standard_if-else-wrapping = enabled
+
+# try / catch 자동 블록 정렬
+ktlint_standard_try-catch-wrapping = enabled
+
+# when 블록 자동 정렬
+ktlint_standard_when-wrapping = enabled
+
+
+############################
+# Annotation Formatting
+############################
+# 어노테이션과 선언부를 읽기 좋게 정렬
+ktlint_standard_annotation = enabled
+
+
+############################
+# Block / Curly Brace Formatting
+############################
+# 중괄호 위치 · 블록 포맷팅 통일
+ktlint_standard_block-wrapping = enabled
+ktlint_standard_block-indent = enabled
+
+
+############################
+# Spacing 규칙
+############################
+# 연산자 앞뒤 공백
+ktlint_standard_spacing-around-operators = enabled
+
+# 콜론(:) 뒤 공백
+ktlint_standard_spacing-around-colon = enabled
+
+# 타입 파라미터(<T>) 공백
+ktlint_standard_spacing-around-type-parameters = enabled
+
+# 괄호 주변 공백
+ktlint_standard_spacing-around-parentheses = enabled
+
+
+############################
+# Lambda Formatting
+############################
+# 람다 인자 및 포맷팅
+ktlint_standard_lambda-wrapping = enabled
+ktlint_standard_lambda-argument = enabled
+
+
+############################
+# Indentation (들여쓰기 규칙)
+############################
+ktlint_standard_indent = enabled
+ktlint_standard_indent-size = 4
+
+
+############################
+# 기타 Formatting 규칙
+############################
+# 파일 끝에 개행 유지
+ktlint_standard_new-line-at-end-of-file = enabled
+
+# 불필요한 세미콜론 제거
+ktlint_standard_no-semi = enabled
+
+# 사용하지 않는 import 제거
+ktlint_standard_no-unused-imports = enabled
