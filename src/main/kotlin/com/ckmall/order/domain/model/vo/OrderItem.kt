@@ -2,6 +2,7 @@ package com.ckmall.order.domain.model.vo
 
 data class OrderItem(
     val productId: String,
+    val productName: String,
     val quantity: Int,
     val price: Money,
 ) {

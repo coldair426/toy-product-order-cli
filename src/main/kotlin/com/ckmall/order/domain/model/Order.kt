@@ -18,6 +18,7 @@ class Order(
                 items.remove(existingItem)
                 OrderItem(
                     productId = existingItem.productId,
+                    productName = existingItem.productName,
                     quantity = existingItem.quantity + item.quantity,
                     price = existingItem.price,
                 )
