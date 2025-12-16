@@ -6,4 +6,6 @@ interface ProductRepository {
     fun findById(id: String): Product?
 
     fun findAll(): List<Product>
+
+    fun save(product: Product)
 }

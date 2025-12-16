@@ -3,7 +3,9 @@ package com.ckmall.order.adapter.outbound.persistence
 import com.ckmall.order.application.port.repository.InventoryRepository
 import com.ckmall.order.domain.model.Inventory
 import kotlin.collections.set
+import org.springframework.stereotype.Repository
 
+@Repository
 class InMemoryInventoryRepository : InventoryRepository {
     private val storedInventories = mutableMapOf<String, Inventory>()
 
