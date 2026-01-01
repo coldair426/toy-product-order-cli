@@ -2,7 +2,7 @@ package com.ckmall.order.domain.model.vo
 
 class Money private constructor(
     val amount: Long,
-) {
+) : Comparable<Money> {
     init {
         require(amount >= 0) { "금액은 항상 0 이상" }
     }
@@ -20,6 +20,8 @@ class Money private constructor(
 
         return Money(this.amount * multiplier)
     }
+
+    override operator fun compareTo(other: Money): Int = this.amount.compareTo(other.amount)
 
     fun isZero(): Boolean = amount == 0L
 

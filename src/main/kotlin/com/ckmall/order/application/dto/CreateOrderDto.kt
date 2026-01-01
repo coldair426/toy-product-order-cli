@@ -7,6 +7,8 @@ data class OrderLineRequest(
 
 data class CreateOrderResponse(
     val orderedItems: List<OrderedProductResponse>,
+    val itemsTotalPrice: Long,
+    val shippingFee: Long,
     val totalPrice: Long,
 )
 

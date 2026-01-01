@@ -2,11 +2,13 @@ package com.ckmall.order.domain.model
 
 import com.ckmall.order.domain.model.vo.Money
 import com.ckmall.order.domain.model.vo.OrderItem
+import com.ckmall.order.domain.policy.ShippingFeePolicy
 import kotlin.String
 
 class Order(
     val id: String,
     private val items: MutableList<OrderItem> = mutableListOf(),
+    private var shippingFee: Money = Money.ZERO,
 ) {
     fun addItem(item: OrderItem) {
         val existingItem = items.find { it.productId == item.productId }
@@ -27,5 +29,15 @@ class Order(
         items.add(newItem)
     }
 
-    fun totalPrice(): Money = items.fold(Money.ZERO) { acc, item -> acc + item.totalPrice() }
+    fun applyShippingFee(policy: ShippingFeePolicy) {
+        this.shippingFee = policy.calculate(itemsTotalPrice())
+    }
+
+    fun items(): List<OrderItem> = items.toList()
+
+    fun shippingFee(): Money = this.shippingFee
+
+    fun itemsTotalPrice(): Money = items.fold(Money.ZERO) { acc, item -> acc + item.totalPrice() }
+
+    fun totalPrice(): Money = itemsTotalPrice() + shippingFee
 }

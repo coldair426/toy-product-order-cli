@@ -7,6 +7,8 @@ import com.ckmall.order.application.usecase.GetAllProductsUseCase
 import java.util.Scanner
 import org.springframework.stereotype.Component
 
+private const val SEPARATOR = "-----------------------------------"
+
 @Component
 class OrderCliAdapter(
     private val createOrderUseCase: CreateOrderUseCase,
@@ -21,6 +23,7 @@ class OrderCliAdapter(
                     printAllProducts()
                     startOrderLoop()
                 }
+
                 "q" -> return
             }
         }
@@ -28,8 +31,7 @@ class OrderCliAdapter(
 
     private fun startOptionSelector(): String {
         while (true) {
-            print("\n")
-            print("입력(o[order]: 주문, q[quit]: 종료) : ")
+            print("\n입력(o[order]: 주문, q[quit]: 종료) : ")
             val selectedOption = scanner.nextLine().trim()
             when (selectedOption) {
                 "o" -> return "o"
@@ -79,17 +81,22 @@ class OrderCliAdapter(
 
     private fun printResult(response: CreateOrderResponse) {
         println("주문 내역:")
-        println("-----------------------------------")
+        println(SEPARATOR)
 
         response.orderedItems.forEach {
             println("${it.productName} - ${it.quantity}개")
         }
 
-        println("-----------------------------------")
-        println("주문금액: ${formatMoney(response.totalPrice)}")
-        println("-----------------------------------")
+        println(SEPARATOR)
+        println("주문금액: ${formatMoney(response.itemsTotalPrice)}")
+
+        if (response.shippingFee > 0L) {
+            println("배송비: ${formatMoney(response.shippingFee)}")
+        }
+
+        println(SEPARATOR)
         println("지불금액: ${formatMoney(response.totalPrice)}")
-        println("-----------------------------------")
+        println(SEPARATOR)
     }
 
     private fun formatMoney(amount: Long): String = "%,d원".format(amount)

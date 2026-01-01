@@ -9,6 +9,7 @@ import com.ckmall.order.application.port.repository.ProductRepository
 import com.ckmall.order.application.usecase.CreateOrderUseCase
 import com.ckmall.order.domain.model.Order
 import com.ckmall.order.domain.model.vo.OrderItem
+import com.ckmall.order.domain.policy.ShippingFeePolicy
 import java.util.UUID
 import org.springframework.stereotype.Service
 
@@ -17,13 +18,12 @@ class CreateOrderService(
     private val orderRepository: OrderRepository,
     private val inventoryRepository: InventoryRepository,
     private val productRepository: ProductRepository,
+    private val shippingFeePolicy: ShippingFeePolicy,
 ) : CreateOrderUseCase {
     override fun execute(requests: List<OrderLineRequest>): CreateOrderResponse {
         require(requests.isNotEmpty()) { "주문 항목은 최소 1개 이상" }
 
         val order = Order(id = UUID.randomUUID().toString())
-
-        val orderedItems = mutableListOf<OrderedProductResponse>()
 
         requests.forEach { request ->
             val product =
@@ -49,19 +49,21 @@ class CreateOrderService(
                 )
 
             order.addItem(orderItem)
-
-            orderedItems.add(
-                OrderedProductResponse(
-                    productName = product.name,
-                    quantity = request.quantity,
-                ),
-            )
         }
 
+        order.applyShippingFee(shippingFeePolicy)
         orderRepository.save(order)
 
         return CreateOrderResponse(
-            orderedItems = orderedItems,
+            orderedItems =
+                order.items().map {
+                    OrderedProductResponse(
+                        productName = it.productName,
+                        quantity = it.quantity,
+                    )
+                },
+            shippingFee = order.shippingFee().amount,
+            itemsTotalPrice = order.itemsTotalPrice().amount,
             totalPrice = order.totalPrice().amount,
         )
     }
