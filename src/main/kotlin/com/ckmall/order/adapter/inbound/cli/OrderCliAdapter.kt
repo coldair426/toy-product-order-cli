@@ -4,6 +4,7 @@ import com.ckmall.order.application.dto.CreateOrderResponse
 import com.ckmall.order.application.dto.OrderLineRequest
 import com.ckmall.order.application.usecase.CreateOrderUseCase
 import com.ckmall.order.application.usecase.GetAllProductsUseCase
+import com.ckmall.order.domain.exception.SoldOutException
 import java.util.Scanner
 import org.springframework.stereotype.Component
 
@@ -57,26 +58,31 @@ class OrderCliAdapter(
         val orderLines = mutableListOf<OrderLineRequest>()
 
         print("\n")
+        try {
+            while (true) {
+                print("상품번호 : ")
+                val productId = scanner.nextLine().trim()
 
-        while (true) {
-            print("상품번호 : ")
-            val productId = scanner.nextLine().trim()
+                if (productId.isEmpty()) break
 
-            if (productId.isEmpty()) break
+                print("수량 : ")
+                val quantity = scanner.nextLine().trim().toInt()
 
-            print("수량 : ")
-            val quantity = scanner.nextLine().trim().toInt()
+                orderLines.add(
+                    OrderLineRequest(
+                        productId = productId,
+                        quantity = quantity,
+                    ),
+                )
+            }
 
-            orderLines.add(
-                OrderLineRequest(
-                    productId = productId,
-                    quantity = quantity,
-                ),
-            )
+            val response = createOrderUseCase.execute(orderLines)
+            printResult(response)
+        } catch (ex: SoldOutException) {
+            println(ex.message)
+        } catch (e: IllegalArgumentException) {
+            println(e.message)
         }
-
-        val response = createOrderUseCase.execute(orderLines)
-        printResult(response)
     }
 
     private fun printResult(response: CreateOrderResponse) {

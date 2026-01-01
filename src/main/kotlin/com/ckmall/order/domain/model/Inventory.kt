@@ -1,5 +1,7 @@
 package com.ckmall.order.domain.model
 
+import com.ckmall.order.domain.exception.SoldOutException
+
 class Inventory(
     val productId: String,
     private var quantity: Int,
@@ -12,7 +14,7 @@ class Inventory(
 
     fun decrease(amount: Int) {
         require(amount > 0) { "차감 수량은 0 이상" }
-        require(quantity >= amount) { "재고 부족" }
+        if (quantity < amount) throw SoldOutException(productId)
 
         quantity -= amount
     }

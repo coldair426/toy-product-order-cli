@@ -7,6 +7,7 @@ import com.ckmall.order.application.port.repository.InventoryRepository
 import com.ckmall.order.application.port.repository.OrderRepository
 import com.ckmall.order.application.port.repository.ProductRepository
 import com.ckmall.order.application.usecase.CreateOrderUseCase
+import com.ckmall.order.domain.exception.SoldOutException
 import com.ckmall.order.domain.model.Order
 import com.ckmall.order.domain.model.vo.OrderItem
 import com.ckmall.order.domain.policy.ShippingFeePolicy
@@ -25,6 +26,7 @@ class CreateOrderService(
 
         val order = Order(id = UUID.randomUUID().toString())
 
+        // in-memory repository는 트랜젝션를 직접 구현해야함
         requests.forEach { request ->
             val product =
                 productRepository.findById(request.productId)
@@ -34,8 +36,13 @@ class CreateOrderService(
                     ?: throw IllegalArgumentException("재고 정보가 없음")
 
             if (!inventory.isAvailable(request.quantity)) {
-                throw IllegalArgumentException("재고 부족")
+                throw SoldOutException(request.productId)
             }
+        }
+
+        requests.forEach { request ->
+            val product = productRepository.findById(request.productId)!!
+            val inventory = inventoryRepository.findByProductId(product.id)!!
 
             inventory.decrease(request.quantity)
             inventoryRepository.save(inventory)
