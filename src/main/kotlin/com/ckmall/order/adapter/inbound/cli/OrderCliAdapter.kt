@@ -9,6 +9,7 @@ import java.util.Scanner
 import org.springframework.stereotype.Component
 
 private const val SEPARATOR = "-----------------------------------"
+private const val BANNERSEPARATOR = "==================================="
 
 @Component
 class OrderCliAdapter(
@@ -18,6 +19,7 @@ class OrderCliAdapter(
     private val scanner = Scanner(System.`in`)
 
     fun start() {
+        printBanner()
         while (true) {
             when (startOptionSelector()) {
                 "o" -> {
@@ -28,6 +30,12 @@ class OrderCliAdapter(
                 "q" -> return
             }
         }
+    }
+
+    private fun printBanner() {
+        println(BANNERSEPARATOR)
+        println("       상품 주문 CLI 시스템")
+        println(BANNERSEPARATOR)
     }
 
     private fun startOptionSelector(): String {
