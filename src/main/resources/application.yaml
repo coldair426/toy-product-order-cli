@@ -4,6 +4,8 @@ spring:
   main:
     banner-mode: off
     log-startup-info: false
+  profiles:
+    active: cli
 
 logging:
   level:

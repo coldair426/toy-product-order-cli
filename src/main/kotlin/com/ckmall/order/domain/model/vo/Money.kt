@@ -1,6 +1,7 @@
 package com.ckmall.order.domain.model.vo
 
-class Money private constructor(
+@ConsistentCopyVisibility
+data class Money private constructor(
     val amount: Long,
 ) : Comparable<Money> {
     init {
@@ -22,8 +23,6 @@ class Money private constructor(
     }
 
     override operator fun compareTo(other: Money): Int = this.amount.compareTo(other.amount)
-
-    fun isZero(): Boolean = amount == 0L
 
     companion object {
         fun of(amount: Long): Money = Money(amount)

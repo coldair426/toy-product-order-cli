@@ -6,12 +6,14 @@ import com.ckmall.order.application.usecase.CreateOrderUseCase
 import com.ckmall.order.application.usecase.GetAllProductsUseCase
 import com.ckmall.order.domain.exception.SoldOutException
 import java.util.Scanner
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 private const val SEPARATOR = "-----------------------------------"
 private const val BANNERSEPARATOR = "==================================="
 
 @Component
+@Profile("cli")
 class OrderCliAdapter(
     private val createOrderUseCase: CreateOrderUseCase,
     private val getAllProductsUseCase: GetAllProductsUseCase,

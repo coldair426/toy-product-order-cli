@@ -13,12 +13,12 @@ class ProductCsvReader(
     fun read(): List<ProductCsvRow> {
         resource.inputStream.bufferedReader().use { reader ->
             val format =
-                CSVFormat.Builder
-                    .create(CSVFormat.DEFAULT)
+                CSVFormat.DEFAULT
+                    .builder()
                     .setHeader() // 첫 줄을 header로 사용
                     .setSkipHeaderRecord(true) // header row는 record로 제외
                     .setTrim(true) // 공백 제거
-                    .build()
+                    .get()
 
             val records = format.parse(reader)
 

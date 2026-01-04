@@ -28,12 +28,13 @@ class MoneyTest {
     }
 
     @Test
-    fun `Money에 음수를 곱하면 예외가 발생한다`(){
+    fun `Money에 음수를 곱하면 예외가 발생한다`() {
         // given
         val baseMoney = Money.of(10)
         val negativeMultiplier = -1
 
-        assertThrows<IllegalArgumentException>{
+        // when & then
+        assertThrows<IllegalArgumentException> {
             baseMoney * negativeMultiplier
         }
     }
