@@ -99,12 +99,12 @@ class OrderCliAdapter(
         println("주문 내역:")
         println(SEPARATOR)
 
-        response.orderedItems.forEach {
+        response.orderedLines.forEach {
             println("${it.productName} - ${it.quantity}개")
         }
 
         println(SEPARATOR)
-        println("주문금액: ${formatMoney(response.itemsTotalPrice)}")
+        println("주문금액: ${formatMoney(response.linesTotalPrice)}")
 
         if (response.shippingFee > 0L) {
             println("배송비: ${formatMoney(response.shippingFee)}")

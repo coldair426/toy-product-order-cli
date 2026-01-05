@@ -4,15 +4,15 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class OrderItemTest {
+class OrderLineTest {
     @Test
-    fun `주문 수량이 0이하면 OrderItem 생성 시 예외가 발생한다`() {
+    fun `주문 수량이 0이하면 OrderLine 생성 시 예외가 발생한다`() {
         // given
         val quantity = 0
 
         // when & then
         assertThrows<IllegalArgumentException> {
-            OrderItem(
+            OrderLine(
                 productId = "테스트 상품ID",
                 productName = "테스트 상품명",
                 quantity = quantity,
@@ -27,8 +27,8 @@ class OrderItemTest {
         val quantity = 10
         val price = Money.of(3000)
 
-        val orderItem =
-            OrderItem(
+        val orderLine =
+            OrderLine(
                 productId = "테스트 상품ID",
                 productName = "테스트 상품명",
                 quantity = quantity,
@@ -36,7 +36,7 @@ class OrderItemTest {
             )
 
         // when
-        val totalPrice = orderItem.totalPrice()
+        val totalPrice = orderLine.totalPrice()
 
         // then
         assertEquals(Money.of(30000), totalPrice)

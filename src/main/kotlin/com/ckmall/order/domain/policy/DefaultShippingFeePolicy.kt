@@ -10,6 +10,6 @@ class DefaultShippingFeePolicy : ShippingFeePolicy {
         private val DEFAULT_SHIPPING_FEE = Money.of(2_500)
     }
 
-    override fun calculate(itemsTotalPrice: Money): Money =
-        if (itemsTotalPrice < FREE_SHIPPING_THRESHOLD) DEFAULT_SHIPPING_FEE else Money.ZERO
+    override fun calculate(linesTotalPrice: Money): Money =
+        if (linesTotalPrice < FREE_SHIPPING_THRESHOLD) DEFAULT_SHIPPING_FEE else Money.ZERO
 }

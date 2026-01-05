@@ -9,7 +9,7 @@ import com.ckmall.order.application.port.repository.ProductRepository
 import com.ckmall.order.application.usecase.CreateOrderUseCase
 import com.ckmall.order.domain.exception.SoldOutException
 import com.ckmall.order.domain.model.Order
-import com.ckmall.order.domain.model.vo.OrderItem
+import com.ckmall.order.domain.model.vo.OrderLine
 import com.ckmall.order.domain.policy.ShippingFeePolicy
 import java.util.UUID
 import org.springframework.stereotype.Service
@@ -47,30 +47,30 @@ class CreateOrderService(
             inventory.decrease(request.quantity)
             inventoryRepository.save(inventory)
 
-            val orderItem =
-                OrderItem(
+            val orderLine =
+                OrderLine(
                     productId = product.id,
                     productName = product.name,
                     quantity = request.quantity,
                     price = product.price,
                 )
 
-            order.addItem(orderItem)
+            order.addLine(orderLine)
         }
 
         order.applyShippingFee(shippingFeePolicy)
         orderRepository.save(order)
 
         return CreateOrderResponse(
-            orderedItems =
-                order.items().map {
+            orderedLines =
+                order.lines().map {
                     OrderedProductResponse(
                         productName = it.productName,
                         quantity = it.quantity,
                     )
                 },
             shippingFee = order.shippingFee().amount,
-            itemsTotalPrice = order.itemsTotalPrice().amount,
+            linesTotalPrice = order.linesTotalPrice().amount,
             totalPrice = order.totalPrice().amount,
         )
     }

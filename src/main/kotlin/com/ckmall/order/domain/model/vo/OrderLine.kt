@@ -1,6 +1,6 @@
 package com.ckmall.order.domain.model.vo
 
-data class OrderItem(
+data class OrderLine(
     val productId: String,
     val productName: String,
     val quantity: Int,

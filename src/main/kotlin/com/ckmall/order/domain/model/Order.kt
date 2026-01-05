@@ -1,43 +1,43 @@
 package com.ckmall.order.domain.model
 
 import com.ckmall.order.domain.model.vo.Money
-import com.ckmall.order.domain.model.vo.OrderItem
+import com.ckmall.order.domain.model.vo.OrderLine
 import com.ckmall.order.domain.policy.ShippingFeePolicy
 import kotlin.String
 
 class Order(
     val id: String,
-    private val items: MutableList<OrderItem> = mutableListOf(),
+    private val lines: MutableList<OrderLine> = mutableListOf(),
     private var shippingFee: Money = Money.ZERO,
 ) {
-    fun addItem(item: OrderItem) {
-        val existingItem = items.find { it.productId == item.productId }
+    fun addLine(line: OrderLine) {
+        val existingLine = lines.find { it.productId == line.productId }
 
-        val newItem =
-            if (existingItem == null) {
-                item
+        val newLine =
+            if (existingLine == null) {
+                line
             } else {
-                items.remove(existingItem)
-                OrderItem(
-                    productId = existingItem.productId,
-                    productName = existingItem.productName,
-                    quantity = existingItem.quantity + item.quantity,
-                    price = existingItem.price,
+                lines.remove(existingLine)
+                OrderLine(
+                    productId = existingLine.productId,
+                    productName = existingLine.productName,
+                    quantity = existingLine.quantity + line.quantity,
+                    price = existingLine.price,
                 )
             }
 
-        items.add(newItem)
+        lines.add(newLine)
     }
 
     fun applyShippingFee(policy: ShippingFeePolicy) {
-        this.shippingFee = policy.calculate(itemsTotalPrice())
+        this.shippingFee = policy.calculate(linesTotalPrice())
     }
 
-    fun items(): List<OrderItem> = items.toList()
+    fun lines(): List<OrderLine> = lines.toList()
 
-    fun shippingFee(): Money = this.shippingFee
+    fun shippingFee(): Money = shippingFee
 
-    fun itemsTotalPrice(): Money = items.fold(Money.ZERO) { acc, item -> acc + item.totalPrice() }
+    fun linesTotalPrice(): Money = lines.fold(Money.ZERO) { acc, line -> acc + line.totalPrice() }
 
-    fun totalPrice(): Money = itemsTotalPrice() + shippingFee
+    fun totalPrice(): Money = linesTotalPrice() + shippingFee
 }
