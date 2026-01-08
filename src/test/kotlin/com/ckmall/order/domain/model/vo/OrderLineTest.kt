@@ -16,7 +16,7 @@ class OrderLineTest {
                 productId = "테스트 상품ID",
                 productName = "테스트 상품명",
                 quantity = quantity,
-                price = Money.of(200000),
+                price = Money.of(200_000),
             )
         }
     }
@@ -25,7 +25,7 @@ class OrderLineTest {
     fun `주문 총 금액은 price(단가)와 quantity(수량)의 곱이다`() {
         // given
         val quantity = 10
-        val price = Money.of(3000)
+        val price = Money.of(3_000)
 
         val orderLine =
             OrderLine(
@@ -39,6 +39,6 @@ class OrderLineTest {
         val totalPrice = orderLine.totalPrice()
 
         // then
-        assertEquals(Money.of(30000), totalPrice)
+        assertEquals(Money.of(30_000), totalPrice)
     }
 }
