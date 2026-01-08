@@ -26,36 +26,41 @@ class CreateOrderService(
 
         val order = Order(id = UUID.randomUUID().toString())
 
-        // in-memory repository는 트랜젝션를 직접 구현해야함
-        requests.forEach { request ->
-            val product =
-                productRepository.findById(request.productId)
-                    ?: throw IllegalArgumentException("존재하지 않는 상품")
-            val inventory =
-                inventoryRepository.findByProductId(product.id)
-                    ?: throw IllegalArgumentException("재고 정보가 없음")
+        // 단일 JVM 멀티 쓰레드 지원, 멀티 JVM에서는 의미 없음
+        synchronized(this) {
+            // in-memory repository는 트랜젝션를 직접 구현해야함
+            // 검증
+            requests.forEach { request ->
+                val product =
+                    productRepository.findById(request.productId)
+                        ?: throw IllegalArgumentException("존재하지 않는 상품")
+                val inventory =
+                    inventoryRepository.findByProductId(product.id)
+                        ?: throw IllegalArgumentException("재고 정보가 없음")
 
-            if (!inventory.isAvailable(request.quantity)) {
-                throw SoldOutException(request.productId)
+                if (!inventory.isAvailable(request.quantity)) {
+                    throw SoldOutException(request.productId)
+                }
             }
-        }
 
-        requests.forEach { request ->
-            val product = productRepository.findById(request.productId)!!
-            val inventory = inventoryRepository.findByProductId(product.id)!!
+            // 차감
+            requests.forEach { request ->
+                val product = productRepository.findById(request.productId)!!
+                val inventory = inventoryRepository.findByProductId(product.id)!!
 
-            inventory.decrease(request.quantity)
-            inventoryRepository.save(inventory)
+                inventory.decrease(request.quantity)
+                inventoryRepository.save(inventory)
 
-            val orderLine =
-                OrderLine(
-                    productId = product.id,
-                    productName = product.name,
-                    quantity = request.quantity,
-                    price = product.price,
-                )
+                val orderLine =
+                    OrderLine(
+                        productId = product.id,
+                        productName = product.name,
+                        quantity = request.quantity,
+                        price = product.price,
+                    )
 
-            order.addLine(orderLine)
+                order.addLine(orderLine)
+            }
         }
 
         order.applyShippingFee(shippingFeePolicy)
