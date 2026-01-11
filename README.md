@@ -1,47 +1,47 @@
-# toy-product-order-cli 
+# toy-product-order-cli
 
 ## 0. 실행 방법
 
 > 아래 명령은 프로젝트 루트 디렉토리(`toy-product-order-cli`)에서 실행합니다.
 
-### 0.1 테스트 실행
+### 0.1 환경 초기화 (선택)
+
+```bash
+./gradlew clean
+```
+
+- 이전 빌드 산출물(`build/`)을 모두 제거합니다.
+- 빌드/실행 중 이상 동작이 있을 경우 실행을 권장합니다.
+
+### 0.2 테스트 실행 (선택)
 
 ```bash
 ./gradlew test
 ```
 
+- 모든 단위 테스트를 실행합니다.
 - 실행 결과는 콘솔에 출력되며, 테스트 리포트는 아래 경로에서 확인할 수 있습니다.
-  - `build/reports/tests/test/index.html`
+    - `build/reports/tests/test/index.html`
 
-### 0.2 애플리케이션 실행
-
-```bash
-./gradlew bootRun
-```
-
-- `bootRun`은 Spring Boot 애플리케이션을 실행합니다.
-- 실행 후, CLI 진입점(프로젝트 구현에 따라 `OrderCliApplication` 또는 관련 Runner)이 동작합니다.
-
-### 0.3 빌드(테스트 포함) 실행
+### 0.3 빌드 (테스트 포함)
 
 ```bash
 ./gradlew build
 ```
 
-- `build`는 기본적으로 `test`를 포함하므로, 테스트까지 함께 검증하고 싶을 때 사용합니다.
+- `build`는 기본적으로 `test`를 포함합니다.
+- 성공 시 실행 가능한 JAR 파일이 생성됩니다.
+    - `build/libs/order-0.0.1.jar`
 
-### 0.4 유용한 옵션
+### 0.4 애플리케이션 실행 (CLI)
 
 ```bash
-# 특정 테스트 클래스만 실행
-./gradlew test --tests "com.ckmall.order.domain.model.OrderTest"
-
-# 특정 테스트 메서드만 실행
-./gradlew test --tests "com.ckmall.order.application.service.CreateOrderServiceTest.여러 주문이 동시에 재고를 초과하면 SoldOutException이 발생한다"
-
-# Gradle 데몬/캐시 문제 의심 시 클린 후 재실행
-./gradlew clean test
+java -jar build/libs/order-0.0.1.jar --spring.profiles.active=cli
 ```
+
+- 본 프로젝트의 기본 실행 방식입니다.
+- Spring Boot 애플리케이션을 JAR 형태로 실행하며, CLI 인터페이스가 동작합니다.
+- IDE 실행 환경과 무관하게 동일한 방식으로 실행할 수 있습니다.
 
 ## 1. 프로젝트 개요
 
@@ -171,22 +171,22 @@ fun decrease(amount: Int) {
 
 ### 4.1 테스트 범위
 
-| 레이어           | 테스트 여부 | 이유                       |
-|------------------|-------------|----------------------------|
-| Domain           | ✅          | 핵심 비즈니스 규칙 검증     |
-| Policy           | ✅          | 계산 로직 독립 검증          |
-| Application(Service) | ✅          | 유즈케이스 단위 흐름 검증    |
-| Adapter          | ❌          | 과제 범위 외                |
+| 레이어                  | 테스트 여부 | 이유                           |
+|----------------------|--------|------------------------------|
+| Domain               | ✅      | 핵심 비즈니스 규칙 검증                |
+| Policy               | ✅      | 계산 로직 독립 검증                  |
+| Application(Service) | ✅      | 유즈케이스 단위 흐름 검증               |
+| Adapter              | ❌      | 비즈니스 규칙 및 동시성 검증을 제외한 부분은 제외 |
 
 ### 4.2 Mock vs Fake 전략
 
 본 과제에서는 Mock보다 Fake 구현체를 우선 사용하였습니다.
 
 - Fake 사용 이유
-  - 상태 변화 검증 가능
-  - 동시성 테스트 가능
-  - 테스트가 구현 세부사항에 덜 의존
-  - 비즈니스 흐름을 자연스럽게 표현 가능
+    - 상태 변화 검증 가능
+    - 동시성 테스트 가능
+    - 테스트가 구현 세부사항에 덜 의존
+    - 비즈니스 흐름을 자연스럽게 표현 가능
 
 ```kotlin
 class FakeInMemoryInventoryRepository(
